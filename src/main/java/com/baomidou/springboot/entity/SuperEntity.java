@@ -2,13 +2,12 @@ package com.baomidou.springboot.entity;
 
 import java.io.Serializable;
 
-import com.baomidou.mybatisplus.activerecord.Model;
-import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotation.TableId;
 
 /**
  * 演示实体父类
  */
-public class SuperEntity<T extends Model> extends Model<T> {
+public class SuperEntity {//<T extends Model> extends Model<T> {
 
     /**
      * 主键ID , 这里故意演示注解可以无
@@ -33,8 +32,8 @@ public class SuperEntity<T extends Model> extends Model<T> {
         this.tenantId = tenantId;
     }
 
-    @Override
-    protected Serializable pkVal() {
-        return this.id;
-    }
+//    @Override
+//    protected Serializable pkVal() {
+//        return this.id;
+//    }
 }

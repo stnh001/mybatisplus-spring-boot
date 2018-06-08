@@ -14,18 +14,19 @@ import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.baomidou.mybatisplus.MybatisConfiguration;
-import com.baomidou.mybatisplus.MybatisXMLLanguageDriver;
-import com.baomidou.mybatisplus.entity.GlobalConfiguration;
-import com.baomidou.mybatisplus.incrementer.H2KeyGenerator;
-import com.baomidou.mybatisplus.plugins.PaginationInterceptor;
-import com.baomidou.mybatisplus.plugins.PerformanceInterceptor;
-import com.baomidou.mybatisplus.plugins.parser.ISqlParser;
-import com.baomidou.mybatisplus.plugins.parser.ISqlParserFilter;
-import com.baomidou.mybatisplus.plugins.parser.tenant.TenantHandler;
-import com.baomidou.mybatisplus.plugins.parser.tenant.TenantSqlParser;
-import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
-import com.baomidou.mybatisplus.toolkit.PluginUtils;
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import com.baomidou.mybatisplus.core.MybatisXMLLanguageDriver;
+import com.baomidou.mybatisplus.core.config.DbConfig;
+import com.baomidou.mybatisplus.core.config.GlobalConfig;
+import com.baomidou.mybatisplus.core.parser.ISqlParser;
+import com.baomidou.mybatisplus.core.parser.ISqlParserFilter;
+import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
+import com.baomidou.mybatisplus.extension.incrementer.H2KeyGenerator;
+import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.tenant.TenantHandler;
+import com.baomidou.mybatisplus.extension.plugins.tenant.TenantSqlParser;
+import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
@@ -39,7 +40,7 @@ public class MybatisPlusConfig {
      * 使用mp-boot-starter 完全可以去掉这些配置，使用yml配置方式, 这里只做示范
      */
     @Bean
-    public SqlSessionFactory sqlSessionFactory(DataSource dataSource, GlobalConfiguration globalConfiguration) throws Exception {
+    public SqlSessionFactory sqlSessionFactory(DataSource dataSource, GlobalConfig globalConfig) throws Exception {
         MybatisSqlSessionFactoryBean sqlSessionFactory = new MybatisSqlSessionFactoryBean();
         sqlSessionFactory.setDataSource(dataSource);
         sqlSessionFactory.setTypeAliasesPackage("com.baomidou.springboot.entity");
@@ -54,7 +55,7 @@ public class MybatisPlusConfig {
                 pagination,
                 new PerformanceInterceptor()
         });
-        sqlSessionFactory.setGlobalConfig(globalConfiguration);
+        sqlSessionFactory.setGlobalConfig(globalConfig);
         return sqlSessionFactory.getObject();
     }
 
@@ -101,20 +102,19 @@ public class MybatisPlusConfig {
             }
         });
 
-
         sqlParserList.add(tenantSqlParser);
         paginationInterceptor.setSqlParserList(sqlParserList);
-        paginationInterceptor.setSqlParserFilter(new ISqlParserFilter() {
-            @Override
-            public boolean doFilter(MetaObject metaObject) {
-                MappedStatement ms = PluginUtils.getMappedStatement(metaObject);
-                // 过滤自定义查询此时无租户信息约束【 麻花藤 】出现
-                if ("com.baomidou.springboot.mapper.UserMapper.selectListBySQL".equals(ms.getId())) {
-                    return true;
-                }
-                return false;
-            }
-        });
+//        paginationInterceptor.setSqlParserFilter(new ISqlParserFilter() {
+//            @Override
+//            public boolean doFilter(MetaObject metaObject) {
+//                MappedStatement ms = PluginUtils.getMappedStatement(metaObject);
+//                // 过滤自定义查询此时无租户信息约束【 麻花藤 】出现
+//                if ("com.baomidou.springboot.mapper.UserMapper.selectListBySQL".equals(ms.getId())) {
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
         return paginationInterceptor;
     }
 
@@ -124,18 +124,16 @@ public class MybatisPlusConfig {
      * 这里可以扩展，比如使用配置文件来配置扫描Mapper的路径
      */
     @Bean
-    public MapperScannerConfigurer mapperScannerConfigurer(){
+    public MapperScannerConfigurer mapperScannerConfigurer() {
         MapperScannerConfigurer scannerConfigurer = new MapperScannerConfigurer();
         scannerConfigurer.setBasePackage("com.baomidou.springboot.mapper*");
         return scannerConfigurer;
     }
 
     @Bean
-    public GlobalConfiguration globalConfiguration() {
-        GlobalConfiguration conf = new GlobalConfiguration();
-        conf.setIdType(1);
-        conf.setKeyGenerator(new H2KeyGenerator());
-        return conf;
+    public GlobalConfig globalConfig() {
+        return new GlobalConfig().setDbConfig(new DbConfig()
+                .setIdType(1).setKeyGenerator(new H2KeyGenerator()));
     }
 
 }

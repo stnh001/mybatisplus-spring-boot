@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.plugins.Page;
-import com.baomidou.mybatisplus.plugins.pagination.PageHelper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.pagination.Page;
+import com.baomidou.mybatisplus.core.pagination.PageHelper;
 import com.baomidou.springboot.entity.User;
 import com.baomidou.springboot.entity.enums.AgeEnum;
 import com.baomidou.springboot.entity.enums.PhoneEnum;
@@ -40,19 +40,19 @@ public class UserController {
     /**
      * AR 部分测试
      */
-    @GetMapping("/test1")
-    public Page<User> test1() {
-        User user = new User("testAr", AgeEnum.ONE, 1);
-        System.err.println("删除所有：" + user.delete(null));
-        user.setRole(111L);
-        user.setTestDate(new Date());
-        user.setPhone(PhoneEnum.CMCC);
-        user.insert();
-        System.err.println("查询插入结果：" + user.selectById().toString());
-        user.setName("mybatis-plus-ar");
-        System.err.println("更新：" + user.updateById());
-        return user.selectPage(new Page<User>(0, 12), null);
-    }
+//    @GetMapping("/test1")
+//    public Page<User> test1() {
+//        User user = new User("testAr", AgeEnum.ONE, 1);
+//        System.err.println("删除所有：" + user.delete(null));
+//        user.setRole(111L);
+//        user.setTestDate(new Date());
+//        user.setPhone(PhoneEnum.CMCC);
+//        user.insert();
+//        System.err.println("查询插入结果：" + user.selectById().toString());
+//        user.setName("mybatis-plus-ar");
+//        System.err.println("更新：" + user.updateById());
+//        return user.selectPage(new Page<User>(0, 12), null);
+//    }
 
     /**
      * 增删改查 CRUD
@@ -72,7 +72,7 @@ public class UserController {
         for (int i = 0; i < 5; ++i) {
             userService.insert(new User(Long.valueOf(100 + i), "张三" + i, AgeEnum.ONE, 1));
         }
-        Page<User> userListPage = userService.selectPage(new Page<User>(1, 5), new EntityWrapper<>(new User()));
+        Page<User> userListPage = userService.selectPage(new Page<User>(1, 5), new QueryWrapper<User>());
         System.err.println("total=" + userListPage.getTotal() + ", current list size=" + userListPage.getRecords().size());
         return userService.selectById(1L);
     }
