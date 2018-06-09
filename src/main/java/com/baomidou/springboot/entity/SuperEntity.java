@@ -28,8 +28,9 @@ public class SuperEntity {//<T extends Model> extends Model<T> {
         return tenantId;
     }
 
-    public void setTenantId(Long tenantId) {
+    public SuperEntity setTenantId(Long tenantId) {
         this.tenantId = tenantId;
+        return this;
     }
 
 //    @Override

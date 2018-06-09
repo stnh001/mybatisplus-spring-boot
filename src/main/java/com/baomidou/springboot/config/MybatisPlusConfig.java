@@ -3,30 +3,15 @@ package com.baomidou.springboot.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sql.DataSource;
-
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.plugin.Interceptor;
-import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.type.JdbcType;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.baomidou.mybatisplus.core.MybatisConfiguration;
-import com.baomidou.mybatisplus.core.MybatisXMLLanguageDriver;
-import com.baomidou.mybatisplus.core.config.DbConfig;
-import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.parser.ISqlParser;
-import com.baomidou.mybatisplus.core.parser.ISqlParserFilter;
-import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.extension.incrementer.H2KeyGenerator;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.tenant.TenantHandler;
 import com.baomidou.mybatisplus.extension.plugins.tenant.TenantSqlParser;
-import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
@@ -36,45 +21,14 @@ import net.sf.jsqlparser.expression.LongValue;
 public class MybatisPlusConfig {
 
     /**
-     * 自定义配置{@link MybatisSqlSessionFactoryBean}
-     * 使用mp-boot-starter 完全可以去掉这些配置，使用yml配置方式, 这里只做示范
-     */
-    @Bean
-    public SqlSessionFactory sqlSessionFactory(DataSource dataSource, GlobalConfig globalConfig) throws Exception {
-        MybatisSqlSessionFactoryBean sqlSessionFactory = new MybatisSqlSessionFactoryBean();
-        sqlSessionFactory.setDataSource(dataSource);
-        sqlSessionFactory.setTypeAliasesPackage("com.baomidou.springboot.entity");
-        sqlSessionFactory.setTypeEnumsPackage("com.baomidou.springboot.entity.enums");
-        MybatisConfiguration configuration = new MybatisConfiguration();
-        configuration.setDefaultScriptingLanguage(MybatisXMLLanguageDriver.class);
-        configuration.setJdbcTypeForNull(JdbcType.NULL);
-        configuration.setMapUnderscoreToCamelCase(true);
-        sqlSessionFactory.setConfiguration(configuration);
-        PaginationInterceptor pagination = new PaginationInterceptor();
-        sqlSessionFactory.setPlugins(new Interceptor[]{
-                pagination,
-                new PerformanceInterceptor()
-        });
-        sqlSessionFactory.setGlobalConfig(globalConfig);
-        return sqlSessionFactory.getObject();
-    }
-
-    /**
-     * mybatis-plus SQL执行效率插件【生产环境可以关闭】
-     */
-    @Bean
-    public PerformanceInterceptor performanceInterceptor() {
-        return new PerformanceInterceptor();
-    }
-
-    /**
      * mybatis-plus分页插件<br>
      * 文档：http://mp.baomidou.com<br>
      */
     @Bean
     public PaginationInterceptor paginationInterceptor() {
         PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
-        paginationInterceptor.setLocalPage(true);// 开启 PageHelper 的支持
+        // 开启 PageHelper 的支持
+        paginationInterceptor.setLocalPage(true);
         /*
          * 【测试多租户】 SQL 解析处理拦截器<br>
          * 这里固定写成住户 1 实际情况你可以从cookie读取，因此数据看不到 【 麻花藤 】 这条记录（ 注意观察 SQL ）<br>
@@ -131,9 +85,7 @@ public class MybatisPlusConfig {
     }
 
     @Bean
-    public GlobalConfig globalConfig() {
-        return new GlobalConfig().setDbConfig(new DbConfig()
-                .setIdType(1).setKeyGenerator(new H2KeyGenerator()));
+    public H2KeyGenerator getH2KeyGenerator() {
+        return new H2KeyGenerator();
     }
-
 }

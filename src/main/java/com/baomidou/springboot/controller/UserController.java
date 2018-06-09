@@ -105,23 +105,28 @@ public class UserController {
     }
 
     /**
+     * <p>
+     * 参数模式分页
+     * </p>
+     *
      * 7、分页 size 一页显示数量  current 当前页码
      * 方式一：http://localhost:8080/user/page?size=1&current=1<br>
      * 方式二：http://localhost:8080/user/pagehelper?size=1&current=1<br>
      */
-
-    // 参数模式分页
     @GetMapping("/page")
     public Object page(Page page) {
         return userService.selectPage(page);
     }
 
-    // ThreadLocal 模式分页
+    /**
+     * ThreadLocal 模式分页
+     */
     @GetMapping("/pagehelper")
     public Object pagehelper(Page page) {
         PageHelper.setPagination(page);
         page.setRecords(userService.selectList(null));
-        page.setTotal(PageHelper.freeTotal());//获取总数并释放资源 也可以 PageHelper.getTotal()
+        //获取总数并释放资源 也可以 PageHelper.getTotal()
+        page.setTotal(PageHelper.freeTotal());
         return page;
     }
 
@@ -135,10 +140,11 @@ public class UserController {
      * 启动  Application 加上 @EnableTransactionManagement 注解其实可无默认貌似就开启了<br>
      * 需要事物的方法加上 @Transactional 必须的哦！！
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @GetMapping("/test_transactional")
     public void testTransactional() {
-        userService.insert(new User(1000L, "测试事物", AgeEnum.ONE, 3));
+        User user = new User(1000L, "测试事物", AgeEnum.ONE, 3);
+        userService.insert(user);
         System.out.println(" 这里手动抛出异常，自动回滚数据");
         throw new RuntimeException();
     }
