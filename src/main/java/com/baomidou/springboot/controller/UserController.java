@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.pagination.Page;
-import com.baomidou.mybatisplus.core.pagination.PageHelper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageHelper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Pagination;
 import com.baomidou.springboot.entity.User;
 import com.baomidou.springboot.entity.enums.AgeEnum;
 import com.baomidou.springboot.entity.enums.PhoneEnum;
@@ -33,26 +34,26 @@ public class UserController {
      * 分页 PAGE
      */
     @GetMapping("/test")
-    public Page<User> test() {
-        return userService.selectPage(new Page<User>(0, 12));
+    public IPage<User> test() {
+        return userService.selectPage(new Pagination<User>(0, 12), null);
     }
 
     /**
      * AR 部分测试
      */
-//    @GetMapping("/test1")
-//    public Page<User> test1() {
-//        User user = new User("testAr", AgeEnum.ONE, 1);
-//        System.err.println("删除所有：" + user.delete(null));
-//        user.setRole(111L);
-//        user.setTestDate(new Date());
-//        user.setPhone(PhoneEnum.CMCC);
-//        user.insert();
-//        System.err.println("查询插入结果：" + user.selectById().toString());
-//        user.setName("mybatis-plus-ar");
-//        System.err.println("更新：" + user.updateById());
-//        return user.selectPage(new Page<User>(0, 12), null);
-//    }
+    @GetMapping("/test1")
+    public IPage<User> test1() {
+        User user = new User("testAr", AgeEnum.ONE, 1);
+        System.err.println("删除所有：" + user.delete(null));
+        user.setRole(111L);
+        user.setTestDate(new Date());
+        user.setPhone(PhoneEnum.CMCC);
+        user.insert();
+        System.err.println("查询插入结果：" + user.selectById().toString());
+        user.setName("mybatis-plus-ar");
+        System.err.println("更新：" + user.updateById());
+        return user.selectPage(new Pagination<User>(0, 12), null);
+    }
 
     /**
      * 增删改查 CRUD
@@ -72,7 +73,10 @@ public class UserController {
         for (int i = 0; i < 5; ++i) {
             userService.insert(new User(Long.valueOf(100 + i), "张三" + i, AgeEnum.ONE, 1));
         }
-        Page<User> userListPage = userService.selectPage(new Page<User>(1, 5), new QueryWrapper<User>());
+        IPage<User> userListPage = userService.selectPage(new Pagination<User>(1, 5), new QueryWrapper<User>());
+        System.err.println("total=" + userListPage.getTotal() + ", current list size=" + userListPage.getRecords().size());
+
+        userListPage = userService.selectPage(new Pagination<User>(1, 5), new QueryWrapper<User>().orderByDesc("name"));
         System.err.println("total=" + userListPage.getTotal() + ", current list size=" + userListPage.getRecords().size());
         return userService.selectById(1L);
     }
@@ -114,16 +118,16 @@ public class UserController {
      * 方式二：http://localhost:8080/user/pagehelper?size=1&current=1<br>
      */
     @GetMapping("/page")
-    public Object page(Page page) {
-        return userService.selectPage(page);
+    public IPage page(Pagination page) {
+        return userService.selectPage(page, null);
     }
 
     /**
      * ThreadLocal 模式分页
      */
     @GetMapping("/pagehelper")
-    public Object pagehelper(Page page) {
-        PageHelper.setPagination(page);
+    public IPage pagehelper(Pagination page) {
+        PageHelper.setPage(page);
         page.setRecords(userService.selectList(null));
         //获取总数并释放资源 也可以 PageHelper.getTotal()
         page.setTotal(PageHelper.freeTotal());
