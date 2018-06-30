@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageHelper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Pagination;
 import com.baomidou.springboot.entity.User;
 import com.baomidou.springboot.entity.enums.AgeEnum;
 import com.baomidou.springboot.entity.enums.PhoneEnum;
@@ -35,7 +35,7 @@ public class UserController {
      */
     @GetMapping("/test")
     public IPage<User> test() {
-        return userService.selectPage(new Pagination<User>(0, 12), null);
+        return userService.selectPage(new Page<User>(0, 12), null);
     }
 
     /**
@@ -52,7 +52,7 @@ public class UserController {
         System.err.println("查询插入结果：" + user.selectById().toString());
         user.setName("mybatis-plus-ar");
         System.err.println("更新：" + user.updateById());
-        return user.selectPage(new Pagination<User>(0, 12), null);
+        return user.selectPage(new Page<User>(0, 12), null);
     }
 
     /**
@@ -73,10 +73,10 @@ public class UserController {
         for (int i = 0; i < 5; ++i) {
             userService.insert(new User(Long.valueOf(100 + i), "张三" + i, AgeEnum.ONE, 1));
         }
-        IPage<User> userListPage = userService.selectPage(new Pagination<User>(1, 5), new QueryWrapper<User>());
+        IPage<User> userListPage = userService.selectPage(new Page<User>(1, 5), new QueryWrapper<User>());
         System.err.println("total=" + userListPage.getTotal() + ", current list size=" + userListPage.getRecords().size());
 
-        userListPage = userService.selectPage(new Pagination<User>(1, 5), new QueryWrapper<User>().orderByDesc("name"));
+        userListPage = userService.selectPage(new Page<User>(1, 5), new QueryWrapper<User>().orderByDesc("name"));
         System.err.println("total=" + userListPage.getTotal() + ", current list size=" + userListPage.getRecords().size());
         return userService.selectById(1L);
     }
@@ -118,7 +118,7 @@ public class UserController {
      * 方式二：http://localhost:8080/user/pagehelper?size=1&current=1<br>
      */
     @GetMapping("/page")
-    public IPage page(Pagination page) {
+    public IPage page(Page page) {
         return userService.selectPage(page, null);
     }
 
@@ -126,7 +126,7 @@ public class UserController {
      * ThreadLocal 模式分页
      */
     @GetMapping("/pagehelper")
-    public IPage pagehelper(Pagination page) {
+    public IPage pagehelper(Page page) {
         PageHelper.setPage(page);
         page.setRecords(userService.selectList(null));
         //获取总数并释放资源 也可以 PageHelper.getTotal()
