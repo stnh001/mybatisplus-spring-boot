@@ -17,7 +17,6 @@
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<mybatis-plus-boot-starter.version>3.0-alpha</mybatis-plus-boot-starter.version>
 		<HikariCP.version>3.2.0</HikariCP.version>
-		<fastjson.version>1.2.47</fastjson.version>
 	</properties>
 
 	<dependencies>
@@ -46,17 +45,6 @@
 			<version>${mybatis-plus-boot-starter.version}</version>
 		</dependency>
 		<!-- mybatis-plus end -->
-
-		<!-- JUnit test dependency -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>${fastjson.version}</version>
-		</dependency>
 	</dependencies>
 
 	<build>

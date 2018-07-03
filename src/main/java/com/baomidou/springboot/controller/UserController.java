@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -96,16 +95,12 @@ public class UserController {
     public Object addUser() {
         User user = new User("张三'特殊`符号", AgeEnum.TWO, 1);
         user.setPhone(PhoneEnum.CUCC);
-        JSONObject result = new JSONObject();
-        result.put("result", userService.insert(user));
-        return result;
+        return userService.insert(user);
     }
 
     @GetMapping("/selectsql")
     public Object getUserBySql() {
-        JSONObject result = new JSONObject();
-        result.put("records", userService.selectListBySQL());
-        return result;
+        return userService.selectListBySQL();
     }
 
     /**

@@ -2,6 +2,7 @@ package com.baomidou.springboot.entity;
 
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.springboot.entity.enums.AgeEnum;
@@ -29,6 +30,10 @@ public class User extends SuperEntity<User> {
     @TableLogic
     private Integer testType;
 
+    /**
+     * 测试插入填充
+     */
+    @TableField(fill = FieldFill.INSERT)
     private Date testDate;
 
     private Long role;
