@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.extension.api.ApiAssert;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.ApiResult;
@@ -44,7 +43,7 @@ public class UserController extends ApiController {
      */
     @GetMapping("/api")
     public ApiResult<String> testError(String test) {
-        ApiAssert.fail(ObjectUtils.isEmpty(test), ErrorCode.TEST);
+        ApiAssert.isNull(ErrorCode.TEST, test);
         return success(test);
     }
 
