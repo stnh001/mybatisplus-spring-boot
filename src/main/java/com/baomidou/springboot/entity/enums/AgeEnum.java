@@ -1,31 +1,29 @@
 package com.baomidou.springboot.entity.enums;
 
-import java.io.Serializable;
-
 import com.baomidou.mybatisplus.core.enums.IEnum;
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * 测试枚举
  */
-public enum AgeEnum implements IEnum {
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+public enum AgeEnum implements IEnum<Integer> {
     ONE(1, "一岁"),
     TWO(2, "二岁");
 
-    private int value;
+    private Integer value;
     private String desc;
 
-    AgeEnum(final int value, final String desc) {
+    AgeEnum(final Integer value, final String desc) {
         this.value = value;
         this.desc = desc;
     }
 
     @Override
-    public Serializable getValue() {
+    public Integer getValue() {
         return this.value;
     }
 
-    @JsonValue
     public String getDesc(){
         return this.desc;
     }
