@@ -2,6 +2,7 @@ package com.baomidou.springboot.controller;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,8 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.api.ApiAssert;
+import com.baomidou.mybatisplus.extension.api.ApiController;
+import com.baomidou.mybatisplus.extension.api.ApiResult;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageHelper;
+import com.baomidou.springboot.ErrorCode;
 import com.baomidou.springboot.entity.User;
 import com.baomidou.springboot.entity.enums.AgeEnum;
 import com.baomidou.springboot.entity.enums.PhoneEnum;
@@ -24,10 +29,24 @@ import com.baomidou.springboot.service.IUserService;
  */
 @RestController
 @RequestMapping("/user")
-public class UserController {
+public class UserController extends ApiController {
 
     @Autowired
     private IUserService userService;
+
+    /**
+     * <p>
+     * 测试通用 Api Controller 逻辑
+     * </p>
+     * 测试地址：
+     * http://localhost:8080/user/api
+     * http://localhost:8080/user/api?test=mybatisplus
+     */
+    @GetMapping("/api")
+    public ApiResult<String> testError(String test) {
+        ApiAssert.fail(StringUtils.isEmpty(test), ErrorCode.TEST);
+        return success(test);
+    }
 
     /**
      * 分页 PAGE
@@ -107,7 +126,7 @@ public class UserController {
      * <p>
      * 参数模式分页
      * </p>
-     *
+     * <p>
      * 7、分页 size 一页显示数量  current 当前页码
      * 方式一：http://localhost:8080/user/page?size=1&current=1<br>
      * 方式二：http://localhost:8080/user/pagehelper?size=1&current=1<br>
