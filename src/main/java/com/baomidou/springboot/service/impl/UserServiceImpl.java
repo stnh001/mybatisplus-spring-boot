@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.springboot.entity.User;
 import com.baomidou.springboot.mapper.UserMapper;
@@ -27,4 +29,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 		return baseMapper.selectListBySQL();
 	}
 
+	@Override
+	public List<User> selectListByWrapper(Wrapper wrapper) {
+		return baseMapper.selectListByWrapper(wrapper);
+	}
 }

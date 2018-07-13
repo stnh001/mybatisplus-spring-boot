@@ -17,6 +17,7 @@ ext {
 buildscript {
     ext {
         springBootVersion = "2.0.3.RELEASE"
+        mybatisPlusVersion = "3.0-gamma"
     }
 
     // 仓库配置
@@ -51,7 +52,7 @@ tasks.withType(JavaCompile) {
 }
 
 configurations {
-    compile.exclude group: "ch.qos.logback"
+//    compile.exclude group: "ch.qos.logback"
     compile.exclude group: "com.amazonaws"
     compile.exclude group: "org.apache.tomcat"
     compile.exclude module: "spring-boot-starter-tomcat"
@@ -69,7 +70,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-undertow:${springBootVersion}")
     compile("com.h2database:h2:1.4.197")
     compile("com.zaxxer:HikariCP:3.2.0")
-    compile("com.baomidou:mybatis-plus-boot-starter:3.0-beta-SNAPSHOT")
+    compile("com.baomidou:mybatis-plus-boot-starter:${mybatisPlusVersion}")
 
     compileOnly("org.springframework.boot:spring-boot-devtools:${springBootVersion}")
 }

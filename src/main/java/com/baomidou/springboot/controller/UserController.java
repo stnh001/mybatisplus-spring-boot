@@ -48,7 +48,7 @@ public class UserController extends ApiController {
     }
 
     /**
-     * 分页 PAGE
+     * http://localhost:8080/user/test
      */
     @GetMapping("/test")
     public IPage<User> test() {
@@ -57,6 +57,7 @@ public class UserController extends ApiController {
 
     /**
      * AR 部分测试
+     * http://localhost:8080/user/test1
      */
     @GetMapping("/test1")
     public IPage<User> test1() {
@@ -74,6 +75,7 @@ public class UserController extends ApiController {
 
     /**
      * 增删改查 CRUD
+     * http://localhost:8080/user/test2
      */
     @GetMapping("/test2")
     public User test2() {
@@ -100,6 +102,7 @@ public class UserController extends ApiController {
 
     /**
      * 插入 OR 修改
+     * http://localhost:8080/user/test3
      */
     @GetMapping("/test3")
     public User test3() {
@@ -109,6 +112,9 @@ public class UserController extends ApiController {
         return userService.selectById(1L);
     }
 
+    /**
+     * http://localhost:8080/user/add
+     */
     @GetMapping("/add")
     public Object addUser() {
         User user = new User("张三'特殊`符号", AgeEnum.TWO, 1);
@@ -116,9 +122,21 @@ public class UserController extends ApiController {
         return userService.insert(user);
     }
 
-    @GetMapping("/selectsql")
+    /**
+     * http://localhost:8080/user/select_sql
+     */
+    @GetMapping("/select_sql")
     public Object getUserBySql() {
         return userService.selectListBySQL();
+    }
+
+    /**
+     * http://localhost:8080/user/select_wrapper
+     */
+    @GetMapping("/select_wrapper")
+    public Object getUserByWrapper() {
+        return userService.selectListByWrapper(new QueryWrapper<User>()
+                .lambda().like(User::getName, "毛"));
     }
 
     /**
@@ -128,7 +146,10 @@ public class UserController extends ApiController {
      * <p>
      * 7、分页 size 一页显示数量  current 当前页码
      * 方式一：http://localhost:8080/user/page?size=1&current=1<br>
-     * 方式二：http://localhost:8080/user/pagehelper?size=1&current=1<br>
+     * 方式二：http://localhost:8080/user/page_helper?size=1&current=1<br>
+     *
+     * 集合模式，不进行分页直接返回所有结果集：
+     * http://localhost:8080/user/page?listMode=true
      */
     @GetMapping("/page")
     public IPage page(Page page) {
@@ -137,8 +158,9 @@ public class UserController extends ApiController {
 
     /**
      * ThreadLocal 模式分页
+     * http://localhost:8080/user/page_helper?size=2&current=1
      */
-    @GetMapping("/pagehelper")
+    @GetMapping("/page_helper")
     public IPage pagehelper(Page page) {
         PageHelper.setPage(page);
         page.setRecords(userService.selectList(null));
