@@ -166,6 +166,7 @@ public class UserController extends ApiController {
         page.setRecords(userService.selectList(null));
         //获取总数并释放资源 也可以 PageHelper.getTotal()
         page.setTotal(PageHelper.freeTotal());
+        System.out.println("分支提交用于合并");
         return page;
     }
 
